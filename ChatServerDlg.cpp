@@ -37,6 +37,7 @@ BEGIN_MESSAGE_MAP(CChatServerDlg, CDialogEx)
 	ON_MESSAGE(UM_RECEIVE, OnReceive)
 	ON_BN_CLICKED(IDC_BTN_SEND, &CChatServerDlg::OnClickedBtnSend)
 	ON_BN_CLICKED(IDC_BTN_SET, &CChatServerDlg::OnBnClickedBtnSet)
+	ON_WM_TIMER()
 END_MESSAGE_MAP()
 
 
@@ -120,6 +121,9 @@ LPARAM CChatServerDlg::OnAccept(UINT wParam, LPARAM lParam)
 	m_socCom->Send(ok, (int)strlen(ok) + 1);	//소켓이 연결되었다는 것을 클라이어늩에게 알리기 위해 Send 함수로 "접속성공"이라는 문자열을 보냄
 
 	UpdateData(FALSE);
+	SetTimer(1, 1000, NULL);
+	m_lastPongTick = GetTickCount();
+
 	return TRUE;
 }
 
@@ -135,8 +139,11 @@ LPARAM CChatServerDlg::OnReceive(UINT wParam, LPARAM lParam)
 	// 수신된 ANSI 데이터를 유니코드(T)로 변환 (CP_ACP 명시)
 	CString strTmp = (CString)CA2T(pTmp, CP_ACP);
 
+
 	int i = m_list.GetCount();
 	m_list.InsertString(i, _T("[상대] : ") + strTmp);
+
+	m_lastPongTick = GetTickCount();
 
 	return 0;
 }
@@ -187,17 +194,28 @@ void CChatServerDlg::OnBnClickedBtnSet()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
 
-	/*if (m_setDlg.GetSafeHwnd() != NULL)
-	{
-		return;
-	}
-	m_setDlg.m_Ip = m_ini.GetIp();
-	m_setDlg.m_SaveLogPath = m_ini.GetSaveLogPath();
-	m_setDlg.m_DelDay = m_ini.GetDelDay();
-
-	m_setDlg.Create(IDD_SETTING_DLG, this);
-	m_setDlg.ShowWindow(SW_SHOW);*/
 	CSettingDlg dlg;
 	dlg.DoModal();
 	
+}
+//int i = 0;
+void CChatServerDlg::OnTimer(UINT_PTR nIDEvent)
+{
+	// TODO: 여기에 메시지 처리기 코드를 추가 및/또는 기본값을 호출합니다.
+	if (nIDEvent == 1)
+	{
+		m_socCom->Send("Ping\n", 256);
+
+		DWORD now = GetTickCount();
+
+		if (now - m_lastPongTick >= 5000)
+		{
+			m_lastPongTick = GetTickCount();
+			AfxMessageBox(L"연결 끊김 재접속 시도");
+			return;
+		}
+	}
+	//if (i++ % 5 == 0) AfxMessageBox(L"응애"); // 테스트용
+	
+	CDialogEx::OnTimer(nIDEvent);
 }

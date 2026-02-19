@@ -31,4 +31,8 @@ private:
 	CString m_Ip;
 	CString m_SaveLogPath;
 	int m_DelDay;
+	// 삭제날짜 컨트롤 멤버변수
+	CComboBox m_delDay_combo;
+public:
+	virtual BOOL OnInitDialog();
 };

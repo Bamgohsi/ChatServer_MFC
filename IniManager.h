@@ -5,6 +5,7 @@ public:
 	CIniManager();
 	~CIniManager();
 
+public:
 	void SaveIni();
 	void SaveIni(CString ip, CString lpath, int dday);
 	void LoadIni();
