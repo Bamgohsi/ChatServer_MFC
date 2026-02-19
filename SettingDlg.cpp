@@ -5,7 +5,6 @@
 #include "ChatServer.h"
 #include "SettingDlg.h"
 #include "afxdialogex.h"
-#include "IniManager.h"
 
 
 // CSettingDlg 대화 상자
@@ -14,11 +13,11 @@ IMPLEMENT_DYNAMIC(CSettingDlg, CDialogEx)
 
 CSettingDlg::CSettingDlg(CWnd* pParent /*=nullptr*/)
 	: CDialogEx(IDD_SETTING_DLG, pParent)
+	, m_Ip(m_ini.GetIp())
+	, m_SaveLogPath(m_ini.GetSaveLogPath())
+	, m_DelDay(m_ini.GetDelDay())
 {
-	
 }
-//DDX_Text(pDX, IDC_EDIT_INPUT, m_strSend);
-//DDX_Control(pDX, IDC_LIST_CHAT, m_list);
 
 CSettingDlg::~CSettingDlg()
 {
@@ -30,24 +29,7 @@ BEGIN_MESSAGE_MAP(CSettingDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_BTN_CANCEL, &CSettingDlg::OnBnClickedBtnCancel)
 END_MESSAGE_MAP()
 
-
 // CSettingDlg 메시지 처리기
-
-void CSettingDlg::OnCancel()
-{
-	// TODO: 여기에 특수화된 코드를 추가 및/또는 기본 클래스를 호출합니다.
-	DestroyWindow();
-	//CDialogEx::OnCancel(); //창 비활성화가아닌 삭제하게끔 재정의
-}
-
-void CSettingDlg::OnOK()
-{
-	// TODO: 여기에 특수화된 코드를 추가 및/또는 기본 클래스를 호출합니다.
-	DestroyWindow();
-	//CDialogEx::OnOK(); //창 비활성화가아닌 삭제하게끔 재정의
-}
-
-
 
 BOOL CSettingDlg::PreTranslateMessage(MSG* pMsg)
 {
@@ -75,16 +57,13 @@ void CSettingDlg::DoDataExchange(CDataExchange* pDX)
 void CSettingDlg::OnBnClickedBtnSave()
 {
 	UpdateData(TRUE);
-	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
-	//if (m_pIni != nullptr) {
-	//	// 빌려온 주소를 이용해서 저장 함수 호출
-	//	m_pIni->SaveIni(m_Ip, m_SaveLogPath, m_DelDay);
-	//}
+	m_ini.SaveIni(m_Ip, m_SaveLogPath, m_DelDay);
+	AfxMessageBox(L"저장되었습니다.");
 }
 
 
 void CSettingDlg::OnBnClickedBtnCancel()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
-	DestroyWindow();
+	EndDialog(IDD_SETTING_DLG);
 }

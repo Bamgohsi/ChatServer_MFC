@@ -40,8 +40,8 @@ private:
 	CSocCom* m_socCom;		// 통신용 소켓
 	CString m_strSend;		// 입력창에 연결된 문자열 변수
 	CListBox m_list;		// 채팅창 컨트롤 관리 객체
-	CIniManager m_ini;		// 설정장 관리 용 ini 객체
-	CSettingDlg m_setDlg;
+	//CIniManager m_ini;		// 설정장 관리 용 ini 객체
+	//CSettingDlg m_setDlg;
 public:
 	afx_msg void OnClickedBtnSend();
 	virtual BOOL PreTranslateMessage(MSG* pMsg);

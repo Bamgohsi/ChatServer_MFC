@@ -1,5 +1,5 @@
 ﻿#pragma once
-
+#include "IniManager.h"
 
 // CSettingDlg 대화 상자
 
@@ -19,15 +19,16 @@ public:
 protected:
 
 	DECLARE_MESSAGE_MAP()
-	virtual void OnCancel();
-	virtual void OnOK();
 public:
 	virtual BOOL PreTranslateMessage(MSG* pMsg);
-	CString m_Ip;
-	CString m_SaveLogPath;
-	int m_DelDay;
 
 	virtual void DoDataExchange(CDataExchange* pDX);
 	afx_msg void OnBnClickedBtnSave();
 	afx_msg void OnBnClickedBtnCancel();
+
+private:
+	CIniManager m_ini;
+	CString m_Ip;
+	CString m_SaveLogPath;
+	int m_DelDay;
 };

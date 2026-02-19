@@ -186,7 +186,8 @@ BOOL CChatServerDlg::PreTranslateMessage(MSG* pMsg)
 void CChatServerDlg::OnBnClickedBtnSet()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
-	if (m_setDlg.GetSafeHwnd() != NULL)
+
+	/*if (m_setDlg.GetSafeHwnd() != NULL)
 	{
 		return;
 	}
@@ -195,5 +196,8 @@ void CChatServerDlg::OnBnClickedBtnSet()
 	m_setDlg.m_DelDay = m_ini.GetDelDay();
 
 	m_setDlg.Create(IDD_SETTING_DLG, this);
-	m_setDlg.ShowWindow(SW_SHOW);
+	m_setDlg.ShowWindow(SW_SHOW);*/
+	CSettingDlg dlg;
+	dlg.DoModal();
+	
 }
