@@ -42,7 +42,6 @@ private:
 	CListBox m_list;		// 채팅창 컨트롤 관리 객체
 	DWORD m_lastRecvTick;	// 마지막 하트비트 체크 변수
 	bool m_connected;		// 통신연결 상태확인 변수
-	bool m_connecting;		// 통신연결중 상태확인 변수
 
 public:
 	afx_msg void OnClickedBtnSend();				// 채팅 전송 버튼 이벤트 메세지 함수
