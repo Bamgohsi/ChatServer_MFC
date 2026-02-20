@@ -23,16 +23,16 @@ public:
 	virtual BOOL PreTranslateMessage(MSG* pMsg);
 
 	virtual void DoDataExchange(CDataExchange* pDX);
-	afx_msg void OnBnClickedBtnSave();
-	afx_msg void OnBnClickedBtnCancel();
+	afx_msg void OnBnClickedBtnSave();					// 저장 버튼 이벤트. 현재 멤버변수들의 값으로 ini파일에 저장하는 메세지 함수
+	afx_msg void OnBnClickedBtnCancel();				// 취소 버튼 이벤트. 모달 방식 다이얼로그 종료시 ChatServerDlg.cpp의 함수 스코프내 CSettingDlg 객체가 소멸되므로 내부 멤버변수도 소멸
 
 private:
-	CIniManager m_ini;
-	CString m_Ip;
-	CString m_SaveLogPath;
-	int m_DelDay;
+	CIniManager m_ini;			// IniManager 객체
+	CString m_Ip;				// ip 변수
+	CString m_SaveLogPath;		// 로그저장 경로 변수
+	int m_DelDay;				// 로그삭제날짜 변수
 	// 삭제날짜 컨트롤 멤버변수
-	CComboBox m_delDay_combo;
+	CComboBox m_delDay_combo;	// 콤보박스 클래스 객체 (삭제날짜 목록 추가용도)
 public:
 	virtual BOOL OnInitDialog();
 };

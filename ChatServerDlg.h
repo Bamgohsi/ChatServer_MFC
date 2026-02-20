@@ -40,11 +40,13 @@ private:
 	CSocCom* m_socCom;		// 통신용 소켓
 	CString m_strSend;		// 입력창에 연결된 문자열 변수
 	CListBox m_list;		// 채팅창 컨트롤 관리 객체
-	DWORD m_lastPongTick;	// 마지막 하트비트 체크 변수
+	DWORD m_lastRecvTick;	// 마지막 하트비트 체크 변수
+	bool m_connected;		// 통신연결 상태확인 변수
+	bool m_connecting;		// 통신연결중 상태확인 변수
 
 public:
-	afx_msg void OnClickedBtnSend();
-	virtual BOOL PreTranslateMessage(MSG* pMsg);
-	afx_msg void OnBnClickedBtnSet();
-	afx_msg void OnTimer(UINT_PTR nIDEvent);
+	afx_msg void OnClickedBtnSend();				// 채팅 전송 버튼 이벤트 메세지 함수
+	virtual BOOL PreTranslateMessage(MSG* pMsg);	// 채팅을 엔터로 입력하는 가상함수(오버라이딩)
+	afx_msg void OnBnClickedBtnSet();				// 세팅창 다이얼로그를 여는 메세지 함수
+	afx_msg void OnTimer(UINT_PTR nIDEvent);		// 통신연결 및 하트비트 전용 타이머 메세지 함수
 };

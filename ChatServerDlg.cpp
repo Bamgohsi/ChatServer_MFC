@@ -19,6 +19,8 @@
 CChatServerDlg::CChatServerDlg(CWnd* pParent /*=nullptr*/)
 	: CDialogEx(IDD_CHATSERVER_DIALOG, pParent)
 	, m_strSend(_T(""))
+	, m_connected(false)
+	, m_connecting(false)
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 }
@@ -54,7 +56,7 @@ BOOL CChatServerDlg::OnInitDialog()
 
 	// TODO: 여기에 추가 초기화 작업을 추가합니다.
 
-	//m_ini.SaveIni();	//ini default 값으로 생성 및 저장
+	SetTimer(1, 1000, NULL); // 타이머 세팅
 
 	m_socCom = NULL;
 	// 서버 소켓을 생성(포트번호 5000)
@@ -121,8 +123,9 @@ LPARAM CChatServerDlg::OnAccept(UINT wParam, LPARAM lParam)
 	m_socCom->Send(ok, (int)strlen(ok) + 1);	//소켓이 연결되었다는 것을 클라이어늩에게 알리기 위해 Send 함수로 "접속성공"이라는 문자열을 보냄
 
 	UpdateData(FALSE);
-	SetTimer(1, 1000, NULL);
-	m_lastPongTick = GetTickCount();
+	//SetTimer(1, 1000, NULL);
+	m_lastRecvTick = GetTickCount();
+	m_connected = true;
 
 	return TRUE;
 }
@@ -143,7 +146,7 @@ LPARAM CChatServerDlg::OnReceive(UINT wParam, LPARAM lParam)
 	int i = m_list.GetCount();
 	m_list.InsertString(i, _T("[상대] : ") + strTmp);
 
-	m_lastPongTick = GetTickCount();
+	m_lastRecvTick = GetTickCount();
 
 	return 0;
 }
@@ -202,20 +205,23 @@ void CChatServerDlg::OnBnClickedBtnSet()
 void CChatServerDlg::OnTimer(UINT_PTR nIDEvent)
 {
 	// TODO: 여기에 메시지 처리기 코드를 추가 및/또는 기본값을 호출합니다.
-	if (nIDEvent == 1)
+	if (!m_connected)	return;	// 통신연결 상태가 아닐경우 리턴
+
+	if (m_connected && nIDEvent == 1)
 	{
 		m_socCom->Send("Ping\n", 256);
 
 		DWORD now = GetTickCount();
 
-		if (now - m_lastPongTick >= 5000)
+		if (now - m_lastRecvTick >= 5000)
 		{
-			m_lastPongTick = GetTickCount();
-			AfxMessageBox(L"연결 끊김 재접속 시도");
+			m_lastRecvTick = GetTickCount();
+			m_list.InsertString(m_list.GetCount(), _T("error : 연결 끊김 재접속 시도"));
+			
 			return;
 		}
 	}
-	//if (i++ % 5 == 0) AfxMessageBox(L"응애"); // 테스트용
+	//if (i++ % 5 == 0) AfxMessageBox(L"타임아웃"); // 테스트용
 	
 	CDialogEx::OnTimer(nIDEvent);
 }
