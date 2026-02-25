@@ -6,9 +6,5 @@ public:
 	~CLogManager();
 
 private:
-	CString m_serIp;
-	CString m_cliIp;
-	CString m_saveLogPath;
-	int m_delDay;
 };
 

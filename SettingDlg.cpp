@@ -14,9 +14,7 @@ IMPLEMENT_DYNAMIC(CSettingDlg, CDialogEx)
 CSettingDlg::CSettingDlg(CWnd* pParent /*=nullptr*/)
 	: CDialogEx(IDD_SETTING_DLG, pParent)
 {
-	m_Ip = m_ini.GetIp();						// 생성자 이니셜라이져로 멤버변수 초기화할 경우
-	m_SaveLogPath = m_ini.GetSaveLogPath();		// 헤더파일에서 m_ini가 멤버변수들보다 아래에 있으면 미생성 객체 접근으로 크래시 가능성
-	m_DelDay = m_ini.GetDelDay();
+	m_iniCfg = m_iniMgr.GetConfig();
 }
 
 CSettingDlg::~CSettingDlg()
@@ -49,9 +47,8 @@ void CSettingDlg::DoDataExchange(CDataExchange* pDX)
 {
 	// TODO: 여기에 특수화된 코드를 추가 및/또는 기본 클래스를 호출합니다.
 	CDialogEx::DoDataExchange(pDX);
-	DDX_Text(pDX, IDC_IPADDR, m_Ip);
-	DDX_Text(pDX, IDC_MEDBR_LOGPATH, m_SaveLogPath);
-	DDX_Text(pDX, IDC_CBXEX_DELDAY, m_DelDay);
+	DDX_Text(pDX, IDC_MEDBR_LOGPATH, m_iniCfg.logDir);
+	DDX_Text(pDX, IDC_CBXEX_DELDAY, m_iniCfg.delDay);
 	DDX_Control(pDX, IDC_CBXEX_DELDAY, m_delDay_combo);
 }
 
@@ -59,12 +56,12 @@ void CSettingDlg::OnBnClickedBtnSave()
 {
 	if(!UpdateData(TRUE))	return; // DDX 변환/검증 실패 시
 
-	if (m_Ip == L"0.0.0.0" || m_SaveLogPath.IsEmpty() || m_DelDay <= 0)
+	if (m_iniCfg.logDir.IsEmpty() || m_iniCfg.delDay <= 0)
 	{
 		AfxMessageBox(L"올바른 값을 입력하세요");
 		return;
 	}
-	m_ini.SaveIni(m_Ip, m_SaveLogPath, m_DelDay);
+	m_iniMgr.SaveIni(m_iniCfg.logDir, m_iniCfg.delDay);
 	AfxMessageBox(L"저장되었습니다.");
 }
 
