@@ -57,6 +57,7 @@ BOOL CChatServerDlg::OnInitDialog()
 
 	SetTimer(1, 1000, NULL); // 타이머 세팅
 
+	SetHBPiCtrl();	// 하트비트 체크용 픽처컨트롤 초기세팅
 
 	//m_socCom = NULL;
 	// 서버 소켓을 생성(포트번호 5000)
@@ -208,12 +209,15 @@ void CChatServerDlg::OnTimer(UINT_PTR nIDEvent)
 
 	if (m_connected && nIDEvent == 1)
 	{
+		m_lastRecvTick % 2000 < 1000 ? SetHbColor(m_brushGreen) : SetHbColor(m_brushBG);
+
 		m_socCom->Send("Ping\n", 256);		// 1초마다 클라이언트에게 "Ping\n" 전송
 
 		DWORD now = GetTickCount();
 
 		if (now - m_lastRecvTick >= 5000)	//현재시간과 마지막으로 수신한 
 		{
+			SetHbColor(m_brushRed);
 			m_lastRecvTick = GetTickCount();
 			m_list.InsertString(m_list.GetCount(), _T("error : 연결 끊김 재접속 시도"));
 
@@ -226,10 +230,53 @@ void CChatServerDlg::OnTimer(UINT_PTR nIDEvent)
 
 	if (!m_connected)			// 통신연결 상태가 아닐경우
 	{
-		m_socCom = NULL;			
+		m_socCom = NULL;		// 현재 계속 null 부여, 검은색 원 그리는 내부적인 구조 문제 있음
+		SetHbColor(m_brushBlack);
 		return;
 	}
 	//if (i++ % 5 == 0) AfxMessageBox(L"타임아웃"); // 테스트용
 	
 	CDialogEx::OnTimer(nIDEvent);
+}
+void CChatServerDlg::SetHbColor(CBrush &brush)
+{
+	CWnd* pWnd = GetDlgItem(IDC_STATIC_HB);
+	CDC* pDC = pWnd->GetDC(); // DC 얻기
+	CRect rect;
+	pWnd->GetClientRect(&rect); // 영역 크기 가져오기
+
+	// 2. 브러시 및 펜 설정 (필요시)
+	CBrush* pOldBrush = pDC->SelectObject(&brush);
+	CGdiObject* oldPen = pDC->SelectStockObject(NULL_PEN);
+
+	// 3. 원 그리기 (직사각형에 내접하는 타원/원)
+	// rect.left, top, right, bottom을 사용하여 중심 지정
+	pDC->Ellipse(rect);
+	pDC->SelectObject(oldPen);
+
+	// 4. 자원 해제
+	pDC->SelectObject(pOldBrush);
+	pWnd->ReleaseDC(pDC);
+}
+
+void CChatServerDlg::SetHBPiCtrl()
+{
+	if (CWnd* p = GetDlgItem(IDC_STATIC_HB))
+	{
+		p->ModifyStyle(WS_BORDER, 0);           // 1) 일반 테두리 제거
+		p->ModifyStyle(SS_BLACKFRAME, 0);      // 2) Static 프레임 제거(있을 경우)
+		p->ModifyStyle(SS_GRAYFRAME, 0);
+		p->ModifyStyle(SS_ETCHEDFRAME, 0);
+
+		p->ModifyStyleEx(WS_EX_CLIENTEDGE, 0); // 3) 3D 테두리 제거(있을 경우)
+
+		// 스타일 변경 반영
+		p->SetWindowPos(nullptr, 0, 0, 0, 0,
+			SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED);
+	}
+
+	m_brushBlack.CreateSolidBrush(RGB(0, 0, 0));					// 검은색 원
+	m_brushRed.CreateSolidBrush(RGB(255, 0, 0));					// 초록색 원
+	m_brushGreen.CreateSolidBrush(RGB(0, 255, 0));					// 빨간색 원
+	m_brushBG.CreateSolidBrush(GetSysColor(COLOR_3DFACE));			// 백그라운드색 원
 }

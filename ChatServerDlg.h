@@ -42,10 +42,16 @@ private:
 	CListBox m_list;		// 채팅창 컨트롤 관리 객체
 	DWORD m_lastRecvTick;	// 마지막 하트비트 체크 변수
 	bool m_connected;		// 통신연결 상태확인 변수
+	CBrush m_brushBlack;	// 검은색 원
+	CBrush m_brushRed;		// 빨간색 원
+	CBrush m_brushGreen;	// 초록색 원
+	CBrush m_brushBG;		// 백그라운드색 원
 
 public:
 	afx_msg void OnClickedBtnSend();				// 채팅 전송 버튼 이벤트 메세지 함수
 	virtual BOOL PreTranslateMessage(MSG* pMsg);	// 채팅을 엔터로 입력하는 가상함수(오버라이딩)
 	afx_msg void OnBnClickedBtnSet();				// 세팅창 다이얼로그를 여는 메세지 함수
 	afx_msg void OnTimer(UINT_PTR nIDEvent);		// 통신연결 및 하트비트 전용 타이머 메세지 함수
+	void SetHbColor(CBrush &brush);					// 하트비트 체크용도인 픽처 컨트롤 색깔 세팅 함수
+	void SetHBPiCtrl();
 };

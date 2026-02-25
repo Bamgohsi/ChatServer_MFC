@@ -189,6 +189,7 @@
     <ClInclude Include="IniManager.h" />
     <ClInclude Include="LogManager.h" />
     <ClInclude Include="pch.h" />
+    <ClInclude Include="PublicData.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="SettingDlg.h" />
     <ClInclude Include="SocCom.h" />

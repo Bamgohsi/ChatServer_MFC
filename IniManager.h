@@ -1,4 +1,5 @@
 #pragma once
+#include "PublicData.h"
 
 class CIniManager {
 public:
@@ -19,4 +20,5 @@ private:
 	CString m_saveLogPath;	// 로그 저장경로 변수
 	CString m_saveIniPath;	// ini파일 저장경로 변수
 	int m_delDay;			// 로그삭제날짜 변수
+	IniConfig m_ini;
 };
