@@ -140,7 +140,11 @@ LPARAM CChatServerDlg::OnReceive(UINT wParam, LPARAM lParam)
 {
 	char pTmp[256];
 	memset(pTmp, 0, 256);
-	m_socCom->Receive(pTmp, 256);
+	if (m_socCom->Receive(pTmp, sizeof(pTmp)) <= 0)	//
+	{
+		// TODO : Error 코드 로그 기록
+		return 0;
+	}
 
 	// 수신된 ANSI 데이터를 유니코드(T)로 변환 (CP_ACP 명시)
 	CString strTmp = (CString)CA2T(pTmp, CP_ACP);
@@ -172,13 +176,14 @@ void CChatServerDlg::OnClickedBtnSend()
 	UpdateData(TRUE);
 	if (m_strSend.IsEmpty()) return;
 
-	char pTmp[256];
-	memset(pTmp, 0, 256);
+	//char pTmp[256];
+	//memset(pTmp, 0, 256);
 
 	// CP_ACP를 명시하여 한글 인코딩을 확실히 잡아줍니다.
-	strcpy_s(pTmp, 256, (LPCSTR)CT2A(_T("[Send]") + m_strSend + _T("[/Send]"), CP_ACP));
+	//strcpy_s(pTmp, 256, (LPCSTR)CT2A(_T("[Send]") + m_strSend + _T("[/Send]"), CP_ACP));
+	CStringA pTmp = CT2A(_T("[Send]") + m_strSend + _T("[/Send]"), CP_ACP);
 
-	m_socCom->Send(pTmp, 256);
+	m_socCom->Send((LPCSTR)pTmp, pTmp.GetLength());
 
 	// 내 리스트박스에 표시
 	m_list.InsertString(m_list.GetCount(), _T("[나] : ") + m_strSend);
@@ -219,7 +224,7 @@ void CChatServerDlg::OnTimer(UINT_PTR nIDEvent)
 	{
 		m_lastRecvTick % 2000 < 1000 ? SetHbColor(m_brushGreen) : SetHbColor(m_brushBG);
 
-		m_socCom->Send("Ping\n", 256);		// 1초마다 클라이언트에게 "Ping\n" 전송
+		m_socCom->Send("Ping\n", strlen("Ping\n"));		// 1초마다 클라이언트에게 "Ping\n" 전송 // 수정필요.
 
 		DWORD now = GetTickCount();
 
