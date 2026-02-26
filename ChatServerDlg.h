@@ -42,10 +42,11 @@ private:
 	CListBox m_list;		// 채팅창 컨트롤 관리 객체
 	DWORD m_lastRecvTick;	// 마지막 하트비트 체크 변수
 	bool m_connected;		// 통신연결 상태확인 변수
-	CBrush m_brushBlack;	// 검은색 원
-	CBrush m_brushRed;		// 빨간색 원
-	CBrush m_brushGreen;	// 초록색 원
-	CBrush m_brushBG;		// 백그라운드색 원
+	bool m_connecting;		// 통신연결중 상태확인 변수
+	CBrush m_brushYello;	// 노란색 원 (통신 연결 대기 상태)
+	CBrush m_brushRed;		// 빨간색 원 (통신 끊김. 하트비트 타임아웃)
+	CBrush m_brushGreen;	// 초록색 원 (통신중, 백그라운드색 과 번갈아 출력)
+	CBrush m_brushBG;		// 백그라운드색 원 (통신중, 초록색과 번갈아 출력)
 
 public:
 	afx_msg void OnClickedBtnSend();				// 채팅 전송 버튼 이벤트 메세지 함수

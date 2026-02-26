@@ -20,6 +20,7 @@ CChatServerDlg::CChatServerDlg(CWnd* pParent /*=nullptr*/)
 	: CDialogEx(IDD_CHATSERVER_DIALOG, pParent)
 	, m_strSend(_T(""))
 	, m_connected(false)
+	, m_connecting(false)
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 }
@@ -127,6 +128,7 @@ LPARAM CChatServerDlg::OnAccept(UINT wParam, LPARAM lParam)
 	//SetTimer(1, 1000, NULL);
 	m_lastRecvTick = GetTickCount();
 	m_connected = true;
+	m_connecting = false;
 
 	return TRUE;
 }
@@ -144,10 +146,16 @@ LPARAM CChatServerDlg::OnReceive(UINT wParam, LPARAM lParam)
 	CString strTmp = (CString)CA2T(pTmp, CP_ACP);
 
 
+	m_lastRecvTick = GetTickCount();
+	if (strTmp == _T("Pong\n"))				// 추후 message type으로 수정필요
+	{
+		m_lastRecvTick = GetTickCount();
+		return 0;
+	}
+
 	int i = m_list.GetCount();
 	m_list.InsertString(i, _T("[상대] : ") + strTmp);
 
-	m_lastRecvTick = GetTickCount();
 
 	return 0;
 }
@@ -168,7 +176,7 @@ void CChatServerDlg::OnClickedBtnSend()
 	memset(pTmp, 0, 256);
 
 	// CP_ACP를 명시하여 한글 인코딩을 확실히 잡아줍니다.
-	strcpy_s(pTmp, 256, (LPCSTR)CT2A(m_strSend, CP_ACP));
+	strcpy_s(pTmp, 256, (LPCSTR)CT2A(_T("[Send]") + m_strSend + _T("[/Send]"), CP_ACP));
 
 	m_socCom->Send(pTmp, 256);
 
@@ -223,15 +231,18 @@ void CChatServerDlg::OnTimer(UINT_PTR nIDEvent)
 
 			m_socCom->Close();	// 타임아웃시 기존 통신용 소켓 정리
 			m_connected = false;
+			m_socCom = NULL;
 
 			return;
 		}
+
+		return;
 	}
 
-	if (!m_connected)			// 통신연결 상태가 아닐경우
+	if (!m_connecting && !m_connected && nIDEvent == 1)			// 통신연결 상태가 아닐경우
 	{
-		m_socCom = NULL;		// 현재 계속 null 부여, 검은색 원 그리는 내부적인 구조 문제 있음
-		SetHbColor(m_brushBlack);
+		SetHbColor(m_brushYello);
+		m_connecting = true;
 		return;
 	}
 	//if (i++ % 5 == 0) AfxMessageBox(L"타임아웃"); // 테스트용
@@ -275,7 +286,7 @@ void CChatServerDlg::SetHBPiCtrl()
 			SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED);
 	}
 
-	m_brushBlack.CreateSolidBrush(RGB(0, 0, 0));					// 검은색 원
+	m_brushYello.CreateSolidBrush(RGB(255, 255, 0));				// 노란색 원
 	m_brushRed.CreateSolidBrush(RGB(255, 0, 0));					// 초록색 원
 	m_brushGreen.CreateSolidBrush(RGB(0, 255, 0));					// 빨간색 원
 	m_brushBG.CreateSolidBrush(GetSysColor(COLOR_3DFACE));			// 백그라운드색 원

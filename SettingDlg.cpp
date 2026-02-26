@@ -56,9 +56,9 @@ void CSettingDlg::OnBnClickedBtnSave()
 {
 	if(!UpdateData(TRUE))	return; // DDX 변환/검증 실패 시
 
-	if (m_iniCfg.logDir.IsEmpty() || m_iniCfg.delDay <= 0)
+	if (m_iniCfg.logDir.IsEmpty())
 	{
-		AfxMessageBox(L"올바른 값을 입력하세요");
+		AfxMessageBox(L"로그 저장 경로가 잘못되었습니다.");
 		return;
 	}
 	m_iniMgr.SaveIni(m_iniCfg.logDir, m_iniCfg.delDay);

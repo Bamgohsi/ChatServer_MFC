@@ -3,7 +3,7 @@
 //#include <afxstr.h>   // CString
 //#include <windows.h>  // DWORD
 
-enum type
+enum MsgType
 {
 	Error,
 	Send,
