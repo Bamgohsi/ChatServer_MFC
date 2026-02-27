@@ -149,13 +149,23 @@ LPARAM CChatServerDlg::OnReceive(UINT wParam, LPARAM lParam)
 	// 수신된 ANSI 데이터를 유니코드(T)로 변환 (CP_ACP 명시)
 	CString strTmp = (CString)CA2T(pTmp, CP_ACP);
 
+	m_msgtype = m_frameManager.ParseType(strTmp);
 
-	m_lastRecvTick = GetTickCount();
-	if (strTmp == _T("Pong\n"))				// 추후 message type으로 수정필요
+	if (m_msgtype == L"[HB]")
 	{
-		m_lastRecvTick = GetTickCount();
+		if (strTmp == (L"[HB][0][/HB]"))
+		{
+			m_lastRecvTick = GetTickCount();
+		}
 		return 0;
 	}
+	strTmp = m_frameManager.ParseMsg(strTmp);
+
+	//if (strTmp == _T("Pong\n"))				// 추후 message type으로 수정필요
+	//{
+	//	m_lastRecvTick = GetTickCount();
+	//	return 0;
+	//}
 
 	int i = m_list.GetCount();
 	m_list.InsertString(i, _T("[상대] : ") + strTmp);
@@ -181,7 +191,9 @@ void CChatServerDlg::OnClickedBtnSend()
 
 	// CP_ACP를 명시하여 한글 인코딩을 확실히 잡아줍니다.
 	//strcpy_s(pTmp, 256, (LPCSTR)CT2A(_T("[Send]") + m_strSend + _T("[/Send]"), CP_ACP));
-	CStringA pTmp = CT2A(_T("[Send]") + m_strSend + _T("[/Send]"), CP_ACP);
+
+	//CStringA pTmp = CT2A(_T("[Send]") + m_strSend + _T("[/Send]"), CP_ACP);
+	CStringA pTmp = m_frameManager.FormatMsgSendFrame(MsgType::Send, m_strSend);
 
 	m_socCom->Send((LPCSTR)pTmp, pTmp.GetLength());
 
@@ -215,7 +227,7 @@ void CChatServerDlg::OnBnClickedBtnSet()
 	dlg.DoModal();
 	
 }
-//int i = 0;
+
 void CChatServerDlg::OnTimer(UINT_PTR nIDEvent)
 {
 	// TODO: 여기에 메시지 처리기 코드를 추가 및/또는 기본값을 호출합니다.
@@ -224,7 +236,7 @@ void CChatServerDlg::OnTimer(UINT_PTR nIDEvent)
 	{
 		m_lastRecvTick % 2000 < 1000 ? SetHbColor(m_brushGreen) : SetHbColor(m_brushBG);
 
-		m_socCom->Send("Ping\n", strlen("Ping\n"));		// 1초마다 클라이언트에게 "Ping\n" 전송 // 수정필요.
+		m_socCom->Send(m_frameManager.FormatHbSendFrame(), strlen(m_frameManager.FormatHbSendFrame()));		// 1초마다 클라이언트에게 "Ping\n" 전송 // 수정필요.
 
 		DWORD now = GetTickCount();
 
@@ -250,7 +262,6 @@ void CChatServerDlg::OnTimer(UINT_PTR nIDEvent)
 		m_connecting = true;
 		return;
 	}
-	//if (i++ % 5 == 0) AfxMessageBox(L"타임아웃"); // 테스트용
 	
 	CDialogEx::OnTimer(nIDEvent);
 }

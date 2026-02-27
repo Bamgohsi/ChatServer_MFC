@@ -7,6 +7,7 @@
 #include "stdAfx.h"
 #include "IniManager.h"
 #include "SettingDlg.h"
+#include "FrameManager.h"
 
 // CChatServerDlg 대화 상자
 class CChatServerDlg : public CDialogEx
@@ -47,6 +48,8 @@ private:
 	CBrush m_brushRed;		// 빨간색 원 (통신 끊김. 하트비트 타임아웃)
 	CBrush m_brushGreen;	// 초록색 원 (통신중, 백그라운드색 과 번갈아 출력)
 	CBrush m_brushBG;		// 백그라운드색 원 (통신중, 초록색과 번갈아 출력)
+	CFrameManager m_frameManager;	// 프로토콜 파싱 및 빌드용 변수
+	CString m_msgtype;		// 메시지 타입 파싱한걸 담을 변수
 
 public:
 	afx_msg void OnClickedBtnSend();				// 채팅 전송 버튼 이벤트 메세지 함수
