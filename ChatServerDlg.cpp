@@ -153,7 +153,7 @@ LPARAM CChatServerDlg::OnReceive(UINT wParam, LPARAM lParam)
 
 	if (m_msgtype == L"[HB]")
 	{
-		if (strTmp == (L"[HB][0][/HB]"))
+		if (strTmp == (L"[HB][1][/HB]"))
 		{
 			m_lastRecvTick = GetTickCount();
 		}

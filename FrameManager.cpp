@@ -15,7 +15,10 @@ CFrameManager::~CFrameManager()
 
 CString CFrameManager::ParseType(CString msg)
 {
-	CString parsetype = msg.Mid(0, msg.Find(L"]") + 1);
+	int type_pos = msg.Find(L"]");
+	if (type_pos == -1)
+		return msg;
+	CString parsetype = msg.Mid(0, type_pos + 1);
 	return parsetype;
 }
 CStringA CFrameManager::FormatMsgSendFrame(MsgType type, CString msg) // [메시지 종류][서버/클라여부][메시지][/메시지 종류] 이렇게 구성
