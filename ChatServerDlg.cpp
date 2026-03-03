@@ -139,13 +139,14 @@ LPARAM CChatServerDlg::OnAccept(UINT wParam, LPARAM lParam)
 LPARAM CChatServerDlg::OnReceive(UINT wParam, LPARAM lParam)
 {
 	char pTmp[256];
-	memset(pTmp, 0, 256);
-	if (m_socCom->Receive(pTmp, sizeof(pTmp)) <= 0)	//
+	memset(pTmp, 0, sizeof(pTmp));
+
+	int recvLen = m_socCom->Receive(pTmp, sizeof(pTmp) - 1);
+	if (recvLen <= 0)
 	{
-		// TODO : Error 코드 로그 기록
 		return 0;
 	}
-
+	pTmp[recvLen] = '\0';
 	// 수신된 ANSI 데이터를 유니코드(T)로 변환 (CP_ACP 명시)
 	CString strTmp = (CString)CA2T(pTmp, CP_ACP);
 

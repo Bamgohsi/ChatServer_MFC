@@ -2,12 +2,14 @@
 
 #include "PublicData.h"
 
-struct Frame
+struct ProtocolFrame
 {
-	MsgType msType;
-	bool msid;
-	CString msPayload;
+	CString typeOpenStr;
+	CString roleStr;
+	CString msgText;
+	CString typeCloseStr;
 };
+
 class CFrameManager
 {
 public:
@@ -27,7 +29,9 @@ public:
 	CString FormatLogFrame(MsgType type, CString msg); // [시간, 서버/클라 구분, 타입, 데이터] 이렇게 구성
 	CString ParseMsg(CString msg);
 private:
-	CString mod;
+	//CString mod;
+	ProtocolFrame pframe;
+	void ProtocolFrameInit();
 };
 // 타입 종류는 [error, send, receive, setting]
 // 메세지 규칙은 [메시지 종류][서버/클라여부][메시지][/메시지 종류]

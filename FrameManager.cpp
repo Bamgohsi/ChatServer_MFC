@@ -3,7 +3,8 @@
 
 CFrameManager::CFrameManager()
 {
-	mod = "Server";
+	pframe.roleStr = "Server";
+	ProtocolFrameInit();
 }
 
 CFrameManager::~CFrameManager()
@@ -25,30 +26,20 @@ CStringA CFrameManager::FormatMsgSendFrame(MsgType type, CString msg) // [메시지
 {
 	CString formatmsg;
 
-	switch (type)
+	if (type == MsgType::Send)
 	{
-	case MsgType::Error:		// 에러 
-		break;
-	case MsgType::Send:			// send
-		formatmsg.Format(L"[Send][%s][%s][/Send]", mod, msg);
-		break;
-	case MsgType::Receive:		// receive
-		break;
-	case MsgType::Setting:		// setting
-		break;
-	case MsgType::Heartbeat:	// hearbeat
-		formatmsg.Format(L"[Heartbeat][%s][%s][/Send]", mod, msg);
-		break;
-	default:
-		break;
+		pframe.typeOpenStr = "Send";
+		pframe.typeCloseStr = "/Send";
 	}
+	formatmsg.Format(L"[%s][%s][%s][%s]", pframe.typeOpenStr, pframe.roleStr, msg, pframe.typeCloseStr);
+
 	return CT2A(formatmsg, CP_ACP);
 }
 CStringA CFrameManager::FormatHbSendFrame()
 {
-	CString formathb = (L"[HB][0][/HB]");
+	//CString formathb = (L"[HB][0][/HB]");
 
-	return  CT2A(formathb, CP_ACP);;
+	return  CT2A(L"[HB][0][/HB]", CP_ACP);
 }
 CString CFrameManager::FormatLogFrame(MsgType type, CString msg) // [시간, 서버/클라 구분, 타입, 데이터] 이렇게 구성
 {
@@ -82,6 +73,14 @@ CString CFrameManager::ParseMsg(CString msg)
 	CString parsemsg = msg.Mid(left_pos, right_pos - left_pos);
 	return parsemsg;
 }
+
+void CFrameManager::ProtocolFrameInit()
+{
+	pframe.typeOpenStr = "";
+	pframe.msgText = "";
+	pframe.typeCloseStr = "";
+}
+
 //enum class MsgType : int
 //{
 //	Error = 0,
