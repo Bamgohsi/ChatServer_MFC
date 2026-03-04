@@ -6,12 +6,14 @@
 
 CIniManager::CIniManager()
 {
-
 	if (::GetFileAttributes(g_iniConfig.iniDir) != INVALID_FILE_ATTRIBUTES)
 	{
 		LoadIni();
 	}
-	SaveIni();
+	else
+	{
+		SaveIni();
+	}
 }
 
 CIniManager::~CIniManager()

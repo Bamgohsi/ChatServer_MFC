@@ -47,11 +47,11 @@ CString CFrameManager::FormatLogFrame(MsgType type, CString data) // [시간, 서버
 {
 	CString logBuffer;
 	now = CTime::GetCurrentTime();
-	lframe.dataStr.Format(L"%04d년-%02월-%02d일-%02d시-%02d분-%02d분-%02d초", now.GetYear(), now.GetMonth(), now.GetDay(), now.GetHour(), now.GetMinute(), now.GetSecond());
+	lframe.nowTimeStr.Format(L"%04d년-%02월-%02d일-%02d시-%02d분-%02d분-%02d초", now.GetYear(), now.GetMonth(), now.GetDay(), now.GetHour(), now.GetMinute(), now.GetSecond());
 	FormatMsgType(type);
 	lframe.dataStr = data;
 
-	logBuffer.Format(L"[%s, %s, %s, %s]", lframe.dataStr, lframe.roleStr, lframe.typeStr, lframe.dataStr);
+	logBuffer.Format(L"[%s, %s, %s, %s]", lframe.nowTimeStr, lframe.roleStr, lframe.typeStr, lframe.dataStr);
 
 	return logBuffer;
 }

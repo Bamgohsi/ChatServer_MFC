@@ -37,19 +37,20 @@ protected:
 	afx_msg LPARAM OnReceive(UINT wParam, LPARAM IParam);	// 클라이언트에서 오는 데이터 수신할때 실행되는 메세지 함수
 	DECLARE_MESSAGE_MAP()
 private:
-	CSocServer m_socServer;	// 서버용 소켓
-	CSocCom* m_socCom;		// 통신용 소켓
-	CString m_strSend;		// 입력창에 연결된 문자열 변수
-	CListBox m_list;		// 채팅창 컨트롤 관리 객체
-	DWORD m_lastRecvTick;	// 마지막 하트비트 체크 변수
-	bool m_connected;		// 통신연결 상태확인 변수
-	bool m_connecting;		// 통신연결중 상태확인 변수
-	CBrush m_brushYello;	// 노란색 원 (통신 연결 대기 상태)
-	CBrush m_brushRed;		// 빨간색 원 (통신 끊김. 하트비트 타임아웃)
-	CBrush m_brushGreen;	// 초록색 원 (통신중, 백그라운드색 과 번갈아 출력)
-	CBrush m_brushBG;		// 백그라운드색 원 (통신중, 초록색과 번갈아 출력)
+	CSocServer m_socServer;			// 서버용 소켓
+	CSocCom* m_socCom;				// 통신용 소켓
+	CString m_strSend;				// 입력창에 연결된 문자열 변수
+	CListBox m_list;				// 채팅창 컨트롤 관리 객체
+	DWORD m_lastRecvTick;			// 마지막 하트비트 체크 변수
+	bool m_connected;				// 통신연결 상태확인 변수
+	bool m_connecting;				// 통신연결중 상태확인 변수
+	CBrush m_brushYello;			// 노란색 원 (통신 연결 대기 상태)
+	CBrush m_brushRed;				// 빨간색 원 (통신 끊김. 하트비트 타임아웃)
+	CBrush m_brushGreen;			// 초록색 원 (통신중, 백그라운드색 과 번갈아 출력)
+	CBrush m_brushBG;				// 백그라운드색 원 (통신중, 초록색과 번갈아 출력)
 	CFrameManager m_frameManager;	// 프로토콜 파싱 및 빌드용 변수
-	CString m_msgtype;		// 메시지 타입 파싱한걸 담을 변수
+	CString m_msgtype;				// 메시지 타입 파싱한걸 담을 변수
+	CIniManager m_iniManager;		// 전역변수를 생성자에서 Load/Save하기 위한 선언, 현재 cpp에서 사용x
 
 public:
 	afx_msg void OnClickedBtnSend();				// 채팅 전송 버튼 이벤트 메세지 함수
