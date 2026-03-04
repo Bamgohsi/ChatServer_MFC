@@ -187,6 +187,7 @@
     <ClInclude Include="ChatServerDlg.h" />
     <ClInclude Include="FrameManager.h" />
     <ClInclude Include="framework.h" />
+    <ClInclude Include="IniConfig.h" />
     <ClInclude Include="IniManager.h" />
     <ClInclude Include="LogManager.h" />
     <ClInclude Include="pch.h" />
@@ -202,6 +203,7 @@
     <ClCompile Include="ChatServer.cpp" />
     <ClCompile Include="ChatServerDlg.cpp" />
     <ClCompile Include="FrameManager.cpp" />
+    <ClCompile Include="IniConfig.cpp" />
     <ClCompile Include="IniManager.cpp" />
     <ClCompile Include="LogManager.cpp" />
     <ClCompile Include="pch.cpp">

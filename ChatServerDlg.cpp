@@ -162,12 +162,6 @@ LPARAM CChatServerDlg::OnReceive(UINT wParam, LPARAM lParam)
 	}
 	strTmp = m_frameManager.ParseMsg(strTmp);
 
-	//if (strTmp == _T("Pong\n"))				// 추후 message type으로 수정필요
-	//{
-	//	m_lastRecvTick = GetTickCount();
-	//	return 0;
-	//}
-
 	int i = m_list.GetCount();
 	m_list.InsertString(i, _T("[상대] : ") + strTmp);
 

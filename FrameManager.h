@@ -10,6 +10,13 @@ struct ProtocolFrame
 	CString typeCloseStr;
 };
 
+struct LogFrame
+{
+	CString nowTimeStr;
+	CString roleStr;
+	CString typeStr;
+	CString dataStr;
+};
 class CFrameManager
 {
 public:
@@ -26,12 +33,15 @@ public:
 	CString ParseType(CString msg);
 	CStringA FormatMsgSendFrame(MsgType type, CString msg); // [메시지 종류][서버/클라여부][메시지][/메시지 종류] 이렇게 구성
 	CStringA FormatHbSendFrame();
-	CString FormatLogFrame(MsgType type, CString msg); // [시간, 서버/클라 구분, 타입, 데이터] 이렇게 구성
+	CString FormatLogFrame(MsgType type, CString data); // [시간, 서버/클라 구분, 타입, 데이터] 이렇게 구성
 	CString ParseMsg(CString msg);
 private:
 	//CString mod;
+	CTime now;
 	ProtocolFrame pframe;
+	LogFrame lframe;
 	void ProtocolFrameInit();
+	void FormatMsgType(MsgType type);
 };
 // 타입 종류는 [error, send, receive, setting]
 // 메세지 규칙은 [메시지 종류][서버/클라여부][메시지][/메시지 종류]

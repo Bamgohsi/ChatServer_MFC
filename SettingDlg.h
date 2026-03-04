@@ -27,7 +27,6 @@ public:
 	afx_msg void OnBnClickedBtnCancel();				// 취소 버튼 이벤트. 모달 방식 다이얼로그 종료시 ChatServerDlg.cpp의 함수 스코프내 CSettingDlg 객체가 소멸되므로 내부 멤버변수도 소멸
 
 private:
-	IniConfig m_iniCfg;			// IniConfig 구조체
 	CIniManager m_iniMgr;		// IniManager 객체
 	CComboBox m_delDay_combo;	// 콤보박스 클래스 객체 (삭제날짜 목록 추가용도)
 public:

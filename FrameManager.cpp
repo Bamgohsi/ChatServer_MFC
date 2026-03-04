@@ -16,6 +16,8 @@ CFrameManager::~CFrameManager()
 
 CString CFrameManager::ParseType(CString msg)
 {
+	if (msg.Find(L"[") != 0)
+		return msg;
 	int type_pos = msg.Find(L"]");
 	if (type_pos == -1)
 		return msg;
@@ -41,37 +43,38 @@ CStringA CFrameManager::FormatHbSendFrame()
 
 	return  CT2A(L"[HB][0][/HB]", CP_ACP);
 }
-CString CFrameManager::FormatLogFrame(MsgType type, CString msg) // [시간, 서버/클라 구분, 타입, 데이터] 이렇게 구성
+CString CFrameManager::FormatLogFrame(MsgType type, CString data) // [시간, 서버/클라 구분, 타입, 데이터] 이렇게 구성
 {
-	switch (type)
-	{
-	case MsgType::Error :		// 에러 
-		break;
-	case MsgType::Send :		// send
-		break;
-	case MsgType::Receive :		// receive
-		break;
-	case MsgType::Setting :		// setting
-		break;
-	case MsgType::Heartbeat :	// hearbeat
-		break;
-	default:
-		break;
-	}
-	return L"ToDo";
+	CString logBuffer;
+	now = CTime::GetCurrentTime();
+	lframe.dataStr.Format(L"%04d년-%02월-%02d일-%02d시-%02d분-%02d분-%02d초", now.GetYear(), now.GetMonth(), now.GetDay(), now.GetHour(), now.GetMinute(), now.GetSecond());
+	FormatMsgType(type);
+	lframe.dataStr = data;
+
+	logBuffer.Format(L"[%s, %s, %s, %s]", lframe.dataStr, lframe.roleStr, lframe.typeStr, lframe.dataStr);
+
+	return logBuffer;
 }
+
 CString CFrameManager::ParseMsg(CString msg)
 {
-	//	프로토콜 통일후 삭제 필요
-	if (msg.Mid(0) == "Pong\n")
+	CString msgBuffer = msg;
+
+	int type_pos = ParseType(msg).GetLength();
+	if (type_pos <= 0)
 		return msg;
-	int left_pos = msg.Find(L"[Client][");
-	int right_pos = msg.Find(L"][/Send]");
-	if (left_pos == -1 || right_pos == -1)
+
+	msgBuffer = msg.Mid(type_pos, msg.GetLength() - type_pos - (type_pos + 1));
+
+	int role_pos = msgBuffer.Find(L"]");
+	if (role_pos == -1)
 		return msg;
-	left_pos += (int)strlen("[Client][");
-	CString parsemsg = msg.Mid(left_pos, right_pos - left_pos);
-	return parsemsg;
+
+	int openMsgStr = role_pos + 2; // [Client][메시지내용] 에서 ][ 다음 위치 
+
+	msgBuffer = msgBuffer.Mid(openMsgStr, msgBuffer.GetLength() - (openMsgStr + 1));
+
+	return msgBuffer;
 }
 
 void CFrameManager::ProtocolFrameInit()
@@ -81,6 +84,27 @@ void CFrameManager::ProtocolFrameInit()
 	pframe.typeCloseStr = "";
 }
 
+void CFrameManager::FormatMsgType(MsgType type)
+{
+	switch (type)
+	{
+	case MsgType::Error:		// 에러 
+		lframe.typeStr = "Error";
+		break;
+	case MsgType::Send:		// send
+		lframe.typeStr = "Send";
+		break;
+	case MsgType::Receive:		// receive
+		lframe.typeStr = "Receive";
+		break;
+	case MsgType::Setting:		// setting
+		lframe.typeStr = "Setting";
+		break;
+	default:
+		lframe.typeStr = "Init";
+		break;
+	}
+}
 //enum class MsgType : int
 //{
 //	Error = 0,

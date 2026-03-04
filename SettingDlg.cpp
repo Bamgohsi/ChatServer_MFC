@@ -5,6 +5,7 @@
 #include "ChatServer.h"
 #include "SettingDlg.h"
 #include "afxdialogex.h"
+#include "IniConfig.h"
 
 
 // CSettingDlg 대화 상자
@@ -14,7 +15,6 @@ IMPLEMENT_DYNAMIC(CSettingDlg, CDialogEx)
 CSettingDlg::CSettingDlg(CWnd* pParent /*=nullptr*/)
 	: CDialogEx(IDD_SETTING_DLG, pParent)
 {
-	m_iniCfg = m_iniMgr.GetConfig();
 }
 
 CSettingDlg::~CSettingDlg()
@@ -47,8 +47,8 @@ void CSettingDlg::DoDataExchange(CDataExchange* pDX)
 {
 	// TODO: 여기에 특수화된 코드를 추가 및/또는 기본 클래스를 호출합니다.
 	CDialogEx::DoDataExchange(pDX);
-	DDX_Text(pDX, IDC_MEDBR_LOGPATH, m_iniCfg.logDir);
-	DDX_Text(pDX, IDC_CBXEX_DELDAY, m_iniCfg.delDay);
+	DDX_Text(pDX, IDC_MEDBR_LOGPATH, g_iniConfig.logDir);
+	DDX_Text(pDX, IDC_CBXEX_DELDAY, g_iniConfig.delDay);
 	DDX_Control(pDX, IDC_CBXEX_DELDAY, m_delDay_combo);
 }
 
@@ -56,12 +56,12 @@ void CSettingDlg::OnBnClickedBtnSave()
 {
 	if(!UpdateData(TRUE))	return; // DDX 변환/검증 실패 시
 
-	if (m_iniCfg.logDir.IsEmpty())
+	if (g_iniConfig.logDir.IsEmpty())
 	{
 		AfxMessageBox(L"로그 저장 경로가 잘못되었습니다.");
 		return;
 	}
-	m_iniMgr.SaveIni(m_iniCfg.logDir, m_iniCfg.delDay);
+	m_iniMgr.SaveIni(g_iniConfig.logDir, g_iniConfig.delDay);
 	AfxMessageBox(L"저장되었습니다.");
 }
 
