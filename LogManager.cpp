@@ -34,7 +34,7 @@ void CLogManager::WriteLog(MsgType type, CString data)
 	CString ymd = now.Format(_T("%Y%m%d"));
 
 	CString filePath;
-	filePath.Format(_T("%s\\%s\_%s.txt"), LogFilePath, ymd, typeDirStr);
+	filePath.Format(_T("%s\\%s_%s.txt"), LogFilePath, ymd, typeDirStr);
 
 	FILE* fp = NULL;
 	_wfopen_s(&fp, filePath.GetString(), L"a, ccs=UTF-8");
@@ -49,7 +49,23 @@ void CLogManager::WriteLog(MsgType type, CString data)
 
 void CLogManager::DelLog()
 {
+	CFileFind finder;
 
+	BOOL bWorking = TRUE;
+	bWorking = finder.FindFile(g_iniConfig.logDir + CString("\\*.txt"));
+
+	while (bWorking)
+	{
+		bWorking = finder.FindNextFile();
+		if (finder.IsDots()) continue;
+		if (finder.IsDirectory()) DelLog();
+		else ::DeleteFile(finder.GetFilePath());
+	}
+	finder.Close();
+
+	//CTime now = CTime::GetCurrentTime();
+
+	// if(g_iniConfig.delDay)
 }
 
 void CLogManager::FormatMsgType(MsgType type)
