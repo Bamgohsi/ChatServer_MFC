@@ -20,7 +20,7 @@ enum class RoleType
 
 //struct IniConfig
 //{
-//	//CString ip = L"127.0.0.1"; // 현재 사용 X
+//	//CString ip = _T("127.0.0.1"); // 현재 사용 X
 //	CString logDir;
 //	CString iniDir;
 //	int delDay;

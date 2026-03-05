@@ -58,11 +58,11 @@ void CSettingDlg::OnBnClickedBtnSave()
 
 	if (g_iniConfig.logDir.IsEmpty())
 	{
-		AfxMessageBox(L"로그 저장 경로가 잘못되었습니다.");
+		AfxMessageBox(_T("로그 저장 경로가 잘못되었습니다."));
 		return;
 	}
 	m_iniMgr.SaveIni(g_iniConfig.logDir, g_iniConfig.delDay);
-	AfxMessageBox(L"저장되었습니다.");
+	AfxMessageBox(_T("저장되었습니다."));
 }
 
 

@@ -2,7 +2,7 @@
 #include "IniConfig.h"
 
 IniConfig g_iniConfig = {
-	L"D:\\BGH\\ChattingProgram\\ChatServer\\logfiles",	// g_iniConfig.logDir
+	_T("D:\\BGH\\ChattingProgram\\ChatServer\\Log"),		// g_iniConfig.logDir
 	30,													// g_iniConfig.delDay
-	L"D:\\BGH\\ChattingProgram\\ChatServer\\config.ini"	// g_iniConfig.iniDir
+	_T("D:\\BGH\\ChattingProgram\\ChatServer\\config.ini")	// g_iniConfig.iniDir
 };

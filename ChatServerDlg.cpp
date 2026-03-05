@@ -6,6 +6,7 @@
 #include "framework.h"
 #include "ChatServer.h"
 #include "ChatServerDlg.h"
+#include "LogManager.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -124,6 +125,7 @@ LPARAM CChatServerDlg::OnAccept(UINT wParam, LPARAM lParam)
 	const char* ok = "접속성공";
 	m_socCom->Send(ok, (int)strlen(ok) + 1);	//소켓이 연결되었다는 것을 클라이언트에게 알리기 위해 Send 함수로 "접속성공"이라는 문자열을 보냄
 
+
 	UpdateData(FALSE);
 	//SetTimer(1, 1000, NULL);
 	m_lastRecvTick = GetTickCount();
@@ -152,9 +154,9 @@ LPARAM CChatServerDlg::OnReceive(UINT wParam, LPARAM lParam)
 
 	m_msgtype = m_frameManager.ParseType(strTmp);
 
-	if (m_msgtype == L"[HB]")
+	if (m_msgtype == _T("[HB]"))
 	{
-		if (strTmp == (L"[HB][1][/HB]"))
+		if (strTmp == (_T("[HB][1][/HB]")))
 		{
 			m_lastRecvTick = GetTickCount();
 		}
@@ -164,6 +166,7 @@ LPARAM CChatServerDlg::OnReceive(UINT wParam, LPARAM lParam)
 
 	int i = m_list.GetCount();
 	m_list.InsertString(i, _T("[상대] : ") + strTmp);
+	g_log.WriteLog(MsgType::Receive, m_frameManager.FormatLogFrame(MsgType::Receive, strTmp));
 
 
 	return 0;
@@ -173,9 +176,9 @@ LPARAM CChatServerDlg::OnReceive(UINT wParam, LPARAM lParam)
 void CChatServerDlg::OnClickedBtnSend()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
-	if (m_socCom == nullptr)
+	if (m_socCom == NULL)
 	{
-		AfxMessageBox(L"클라이언트가 아직 연결되지 않았습니다.");
+		AfxMessageBox(_T("클라이언트가 아직 연결되지 않았습니다."));
 		return;
 	}
 	UpdateData(TRUE);
@@ -191,6 +194,7 @@ void CChatServerDlg::OnClickedBtnSend()
 	CStringA pTmp = m_frameManager.FormatMsgSendFrame(MsgType::Send, m_strSend);
 
 	m_socCom->Send((LPCSTR)pTmp, pTmp.GetLength());
+	g_log.WriteLog(MsgType::Send, m_frameManager.FormatLogFrame(MsgType::Send, m_strSend));
 
 	// 내 리스트박스에 표시
 	m_list.InsertString(m_list.GetCount(), _T("[나] : ") + m_strSend);
@@ -240,6 +244,7 @@ void CChatServerDlg::OnTimer(UINT_PTR nIDEvent)
 			SetHbColor(m_brushRed);
 			m_lastRecvTick = GetTickCount();
 			m_list.InsertString(m_list.GetCount(), _T("error : 연결 끊김 재접속 시도"));
+			g_log.WriteLog(MsgType::Error, m_frameManager.FormatLogFrame(MsgType::Error, _T("연결끊김(하트비트 타임아웃)")));	// 추후 에러코드로 나타내게 수정 필요
 
 			m_socCom->Close();	// 타임아웃시 기존 통신용 소켓 정리
 			m_connected = false;
@@ -247,7 +252,7 @@ void CChatServerDlg::OnTimer(UINT_PTR nIDEvent)
 
 			return;
 		}
-
+		//deconnected
 		return;
 	}
 
