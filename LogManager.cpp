@@ -47,19 +47,39 @@ void CLogManager::WriteLog(MsgType type, CString data)
 	fclose(fp);
 }
 
-void CLogManager::DelLog()
+void CLogManager::DelLog(CString logPath) // 현재 재귀적으로 모두 삭제함
 {
 	CFileFind finder;
 
 	BOOL bWorking = TRUE;
-	bWorking = finder.FindFile(g_iniConfig.logDir + CString("\\*.txt"));
+	bWorking = finder.FindFile(logPath + _T("\\*.*"));
+
+	COleDateTime now = COleDateTime::GetCurrentTime();		// 햔재 날짜
+	COleDateTimeSpan delDay(g_iniConfig.delDay, 0, 0, 0);	// 삭제 기준날짜
+
 
 	while (bWorking)
 	{
-		bWorking = finder.FindNextFile();
-		if (finder.IsDots()) continue;
-		if (finder.IsDirectory()) DelLog();
-		else ::DeleteFile(finder.GetFilePath());
+		bWorking = finder.FindNextFile();	// 다음 파일 검색
+		if (finder.IsDots()) continue;		// 찾은 파일이 디렉토리면 continue
+		if (finder.IsDirectory())			// 현재 디렉토리면 DelLog 재귀 호출해서 디렉토리내 모든 파일 순회
+		{
+			DelLog(finder.GetFilePath());
+			//RemoveDirectory(finder.GetFilePath()); // 빈 디렉토리 삭제
+		}
+		else
+		{
+			int y = _ttoi(finder.GetFileName().Mid(0, 4));
+			int m = _ttoi(finder.GetFileName().Mid(4, 2));
+			int d = _ttoi(finder.GetFileName().Mid(6, 2));
+
+			COleDateTime fileDate(y, m, d, 0, 0, 0);	// 로그파일의 yyyymmdd형식을 캡슐화
+
+			if (fileDate.GetStatus() != COleDateTime::valid) continue;	// 유효하지 않은 파일이름이면 continue
+
+			if ((fileDate + delDay) < now)
+				DeleteFile(finder.GetFilePath());
+		}
 	}
 	finder.Close();
 
@@ -89,4 +109,3 @@ void CLogManager::FormatMsgType(MsgType type)
 		break;
 	}
 }
-

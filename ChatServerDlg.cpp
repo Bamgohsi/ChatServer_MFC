@@ -7,6 +7,7 @@
 #include "ChatServer.h"
 #include "ChatServerDlg.h"
 #include "LogManager.h"
+#include "IniConfig.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -56,7 +57,7 @@ BOOL CChatServerDlg::OnInitDialog()
 	SetIcon(m_hIcon, FALSE);		// 작은 아이콘을 설정합니다.
 
 	// TODO: 여기에 추가 초기화 작업을 추가합니다.
-
+	g_log.DelLog(g_iniConfig.logDir);
 	SetTimer(1, 1000, NULL); // 타이머 세팅
 
 	SetHBPiCtrl();	// 하트비트 체크용 픽처컨트롤 초기세팅
@@ -68,6 +69,12 @@ BOOL CChatServerDlg::OnInitDialog()
 	m_socServer.Listen();
 	// 소켓 클래스와 메인 윈도우(여기에서는 CChatServerDlg)를 연결
 	m_socServer.Init(this->m_hWnd);
+
+	//CTime now = CTime::GetCurrentTime();
+	//CString ymd = now.Format(_T("%Y%m%d"));
+
+	////AfxMessageBox(now);
+	//AfxMessageBox(ymd);
 
 	return TRUE;  // 포커스를 컨트롤에 설정하지 않으면 TRUE를 반환합니다.
 }
