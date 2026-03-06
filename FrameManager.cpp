@@ -1,10 +1,11 @@
 #include "pch.h"
 #include "FrameManager.h"
+#include "IniConfig.h"
 
 CFrameManager::CFrameManager()
 {
-	pframe.roleStr.Format(_T("Server")); //추후수정필요
-	lframe.roleStr.Format(_T("Server")); //추후수정필요
+	pframe.roleStr = g_iniConfig.roleType;
+	lframe.roleStr = g_iniConfig.roleType;
 	ProtocolFrameInit();
 }
 

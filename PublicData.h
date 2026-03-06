@@ -12,11 +12,11 @@ enum class MsgType : int
 	init = 4
 };
 
-enum class RoleType
-{
-	Server,
-	Client
-};
+//enum class RoleType
+//{
+//	Server,
+//	Client
+//};
 
 //struct IniConfig
 //{

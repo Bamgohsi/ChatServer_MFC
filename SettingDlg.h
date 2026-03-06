@@ -31,4 +31,5 @@ private:
 	CComboBox m_delDay_combo;	// 콤보박스 클래스 객체 (삭제날짜 목록 추가용도)
 public:
 	virtual BOOL OnInitDialog();
+	virtual void OnCancel();
 };

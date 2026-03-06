@@ -3,7 +3,8 @@
 
 struct IniConfig
 {
-	//CString ip = "127.0.0.1"; // 현재 사용 X
+	CString connectIpAddr; // 클라타입일때 연결할 ip주소
+	CString roleType;
 	CString logDir;
 	int delDay;
 	const CString iniDir;
